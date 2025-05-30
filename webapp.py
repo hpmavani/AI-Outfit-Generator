@@ -1,7 +1,7 @@
 import base64
 from flask import Flask, render_template, request, send_file
-from webapp.Modules.image_loader import ImageLoader
-from webapp.Modules.model import ModelHandler
+from modules.image_loader import ImageLoader
+from modules.model import ModelHandler
 
 app = Flask(__name__)
 im = ImageLoader("data/test_no_dup.json")
