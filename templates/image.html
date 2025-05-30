@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <link href="https://fonts.googleapis.com/css2?family=Rhodium+Libre&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+
+    .body {
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Rhodium Libre', serif;
+    }
+
+    .gallery {
+      padding-top: 10px; 
+      padding-left: 10px; 
+      padding-right: 10px; 
+      column-count: 6;
+      background-color: rgb(217, 217, 217); 
+    }
+    
+    .img-container {
+      position: relative; 
+      width: 100%;
+    }
+
+    .gallery-image { 
+      display: block; 
+      width: 100%;
+      break-inside: avoid;
+      border-radius: 10px; 
+      margin-bottom: 10px; 
+    }
+
+    .image-overlay { 
+      position: absolute; 
+      display: block; 
+      top: 0; bottom: 0; right: 0; left: 0; 
+      background-color: rgb(0, 0, 0); 
+      opacity: 0; 
+      transition: opacity 0.3s ease;
+      border-radius: 10px; 
+    }
+    
+    .img-container:hover .image-overlay {
+      opacity: 0.4;
+    }
+
+    .add-button { 
+      position: absolute; 
+      top: 0; 
+      right: 0; 
+      margin-top: 5px; 
+      margin-right: 5px; 
+      border-radius: 40%; 
+      height: 50px;
+      width: 25%; 
+      background-color:rgb(33, 100, 199);
+      border: 0;
+      opacity: 1;
+      color: white; 
+    }
+
+    .add-button:hover {
+      background-color: rgb(94, 16, 178)
+    }
+
+    .image-desc {
+      display: block; 
+      position: absolute; 
+      margin-left: 10px; 
+      bottom: 0; 
+      left: 0; 
+      color: white;
+      font-weight: bold; 
+      font-size: 16px; 
+
+    }
+
+  </style>
+</head>
+<body>
+
+    <div style = "display:block" id = "modal-anim" class = "modal-loading">
+        <img id = "modal-loading-anim" alt = "anim-img"></img>
+    </div>
+  
+  <script>
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms))
+    }
+    async function clothing_animation() {
+        max_images = 7
+        img_dir = "{{ url_for('static', filename='assets/') }}"
+        const anim = document.getElementById("modal-anim")
+        anim.style.display = "block"
+        const anim_img = document.getElementById("modal-loading-anim")
+        let im_ind = 0
+        for(let i = 0; i < 100; i++) {
+            image_url = img_dir + `cl_${im_ind}.png`
+            if(im_ind == 7) {
+              im_ind = 0
+            }
+            try {
+                anim_img.src = image_url
+                console.log("show url", anim_img.src)
+                await sleep(750); // Wait 2 seconds
+            } catch (error) {
+                console.log("Could not load image", error)
+            }
+            im_ind += 1
+        }
+        //anim.style.display = "none"
+        }
+      clothing_animation() 
+    /*async function loadImages() {
+      await fetch("/api/images")
+      .then(data => data.json())
+      .then(json_data => {
+        console.log(json_data)
+
+        json_data.forEach(image => {
+          const gallery = document.getElementById("gallery")
+
+          const img_container = document.createElement("div")
+          img_container.className = "img-container"
+
+          const img = document.createElement("img")
+          img.src = image["image_url"]
+          img.className = "gallery-image"
+          img.loading = "lazy"
+
+          const overlay = document.createElement("div")
+          overlay.className = "image-overlay"
+
+          const add_button = document.createElement("button")
+          add_button.className = "add-button"
+          add_button.textContent = "Add"
+
+          const image_desc = document.createElement("p")
+          image_desc.className = "image-desc"
+          image_desc.textContent = image["item_name"]
+
+          overlay.appendChild(add_button)
+          overlay.appendChild(image_desc)
+
+          img_container.appendChild(img)
+          img_container.appendChild(overlay)
+      
+          gallery.appendChild(img_container)
+          
+
+        })
+      })
+    }
+
+    loadImages()*/
+    
+  </script> 
+</body>
+
+
+</html>

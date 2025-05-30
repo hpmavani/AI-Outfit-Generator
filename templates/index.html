@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Rhodium+Libre&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body { 
+            margin:0;
+            padding:0;
+            font-family: 'Rhodium Libre', serif;
+            background-color: rgb(210, 213, 223);
+        }
+        .main-content {
+            display: flex; 
+            gap: 10px;
+        }
+
+        .gallery {
+            padding-top: 10px; 
+            padding-left: 10px; 
+            padding-right: 10px; 
+            column-count: 6;
+            background-color: rgb(210, 213, 223); 
+        }
+        
+        .img-container {
+            position: relative; 
+            width: 100%;
+        }
+
+        .gallery-image { 
+            display: block; 
+            width: 100%;
+            break-inside: avoid;
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+        }
+
+        .image-overlay { 
+            position: absolute; 
+            display: block; 
+            top: 0; bottom: 0; right: 0; left: 0; 
+            background-color: rgb(0, 0, 0); 
+            opacity: 0; 
+            transition: opacity 0.3s ease;
+            border-radius: 10px; 
+        }
+    
+        .img-container:hover .image-overlay {
+            opacity: 0.4;
+        }
+
+        .add-button { 
+            position: absolute; 
+            top: 0; 
+            right: 0; 
+            margin-top: 5px; 
+            margin-right: 5px; 
+            border-radius: 40%; 
+            height: 50px;
+            width: 25%; 
+            background-color:rgb(33, 100, 199);
+            border: 0;
+            opacity: 1;
+            color: white; 
+        }
+
+        .add-button:hover {
+            background-color: rgb(94, 16, 178)
+        }
+
+        .image-desc {
+            display: block; 
+            position: absolute; 
+            margin-left: 10px; 
+            bottom: 0; 
+            left: 0; 
+            color: white;
+            font-weight: bold; 
+            font-size: 16px; 
+        }
+
+        .select-menu {
+            flex:1;
+            background-color:rgb(208, 228, 248);
+            height:100%;
+            
+        }
+
+        #side-bar-title {
+            font-size:30px;
+            text-align:center;
+
+        }
+
+        #nav-bar {
+            background-color:rgb(44, 46, 47);
+            display: flex; 
+        }
+
+        .nav-font {
+            color:rgb(241, 241, 241); 
+        }
+
+        .links {
+
+        }
+        .links:hover {
+            opacity: 0.7
+        }
+
+        #nav-search {
+            display: flex; 
+            justify-content: center; 
+        }
+
+        #search {
+            padding: 8px 12px; 
+            border: none; 
+            border-radius: 10px; 
+            outline: none; 
+            font-size: 14px; 
+            margin: 15px 0px 15px 120px; 
+            width: 1000px; 
+        }
+
+        .output-modal-overlay {
+            display: none;
+            position: fixed; 
+            top: 0;
+            left: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            justify-content: center; 
+            align-items: center; 
+            background-color: rgb(0, 0, 0, 0.4);
+            z-index: 1; 
+        }
+
+        .output-modal {
+            position: absolute; 
+            background-color: rgb(255, 255, 255); 
+            width: 750px; 
+            height: 500px; 
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .modal-image-bg {
+            background-color: #CDE1FF;
+            height: 75%;
+            width: auto; 
+        }
+
+        .modal-image {
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            height: 282px; 
+            width: auto; 
+        }
+
+        .modal-item-desc {
+            color: black; 
+        }
+
+        #modal-item-para { 
+            padding-top: 50px; 
+            text-align: center; 
+        }
+
+    </style>
+</head>
+<body>
+    <div id = "header"> 
+        <h2 style = "margin: 20px 0px 20px 50px">AI Outfit Generator</h2>
+    </div>
+    <!--<div id = "nav-bar">
+        <div style = "display: flex">
+            <a class = "links" href = "http://127.0.0.1:5000/"><h2 class = "nav-font" style = "margin-left: 50px; padding-right:50px">Home</h2></a>
+            <a class = "links" href = "http://127.0.0.1:5000/about"><h2 class = "nav-font">About</h2></a>
+        </div>
+        <div style = "padding-left: 50px" id = "nav-search">
+            <input placeholder = "searching..." id = "search"></input>
+        </div>
+    </div>-->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <div class = "d-flex justify-content-center">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+                </li>
+                <li id = "generate-link" class = "nav-item">
+                    <div style = "display:flex" class = "generate">
+                        <button onclick = "predict()" class="btn btn-outline-light btn-sm" href="#">Generate <i class = "bi bi-arrow-repeat"></i></button>
+                        <p id = "num-items" style = "padding-left: 10px; color: white">0</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+    </nav>
+
+    <div class = "output-modal-overlay" id = "output-modal-overlay">
+        <div class = "output-modal">
+            <div id = "modal-image-bg" class = "modal-image-bg">
+                <button style = "position: absolute; top:0; right:0; margin: 10px" type="button" onclick = "closeModal()" data-bs-dismiss="modal" class="btn-close" aria-label="Close"></button>
+                <h1 id = "generating" style = "text-align: center; padding: 20px">Generating Item...</h1>
+                <div style = "position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); display:block" id = "modal-anim" class = "modal-loading">
+                    <img style = "height: 80px; width: auto" id = "modal-loading-anim" alt = "anim-img"></img>
+                </div>
+                <img id = "modal-image"></img>
+            </div>
+            <div id = "modal-item-desc" class = "modal-item-desc"><p id = "modal-item-para"></p></div>
+        </div>
+    </div>
+
+    <div style = "padding-top: 40px;" class = "main-content">
+        <div class="gallery" id = "gallery"></div>
+    </div>-
+
+    <div id = "loader">Loading... </div>
+
+    <script>
+        let offset = 0
+        let limit = 20
+
+        let run_anim = true
+
+        window.addEventListener("scroll", () => {
+            scrollBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 900
+            if(scrollBottom && !loading) {
+                loadItems()
+            }
+        })
+
+        const gallery = document.getElementById("gallery")
+        const loader = document.getElementById("loader")
+        var inputList = []
+
+        async function loadItems() {
+            loading = true
+            console.log("requesting offset", offset)
+            await fetch(`/api/images?offset=${offset}&limit=${limit}`)
+            .then(data => data.json())
+            .then(items => {
+                offset += items.length
+                items.forEach(item => {
+                    item_id = item["item_id"]
+                    image_url = item["image_url"]
+                    item_name = item["item_name"]
+
+                    const gallery = document.getElementById("gallery")
+
+                    const img_container = document.createElement("div")
+                    img_container.className = "img-container"
+
+                    const img = document.createElement("img")
+                    img.className = "gallery-image"
+                    img.src = image_url
+                    img.loading = "lazy"
+                    
+                    
+                    const overlay = document.createElement("div")
+                    overlay.className = "image-overlay"
+
+                    const add_button = document.createElement("button")
+                    add_button.className = "add-button"
+                    add_button.textContent = "Add"
+                    add_button.setAttribute('data-info', JSON.stringify(item))
+                    add_button.addEventListener("click", () => {
+                        item = JSON.parse(add_button.getAttribute("data-info"))
+                        inputList.push(item)
+                        num_items_added = document.getElementById("num-items")
+                        num_items_added.textContent = Number(num_items_added.textContent) + 1
+                    })
+
+                    const image_desc = document.createElement("p")
+                    image_desc.className = "image-desc"
+                    image_desc.textContent = item_name
+
+                    overlay.appendChild(add_button)
+                    overlay.appendChild(image_desc)
+
+                    img_container.appendChild(img)
+                    img_container.appendChild(overlay)
+                
+                    gallery.appendChild(img_container)
+
+                })
+                loading = false
+            }).catch(error => {
+                console.log("Error:", error)
+                loading = true
+            })
+        }
+
+        async function predict() {
+
+            document.getElementById("num-items").textContent = 0
+            document.getElementById("output-modal-overlay").style.display = "block"
+
+            run_anim = true
+            clothing_animation()
+
+            inputNames = []
+            inputList.forEach(item => {
+                inputNames.push(item["item_name"])
+            })
+
+            console.log(inputNames)
+
+            await fetch("/api/predict", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    items: inputNames
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Output:", data)
+                run_anim = false
+
+                outfit_display = document.getElementById("modal-image-bg")
+                item_list = document.createElement("div")
+
+                outfit = inputList
+                outfit.push(data)
+
+                var img = document.getElementById("modal-image")
+                img.className = "image"
+                img.src = data["image_url"]
+                img.style.display = "block"
+                img.setAttribute('data-info', JSON.stringify(data))
+                img.className = "modal-image"
+
+                const modal_desc = document.getElementById("modal-item-desc")
+                const item_desc = document.getElementById("modal-item-para")
+                item_desc.textContent = data["item_name"]
+                
+                const generating = document.getElementById("generating")
+                generating.textContent = "Generated Item!"
+
+                modal_desc.appendChild(item_desc)
+
+                outfit_display.appendChild(img)
+
+                inputList = []
+                
+            })
+            .catch(error => {
+                console.log("Error:", error)
+            })
+        }
+
+        function closeModal() {
+            document.getElementById("output-modal-overlay").style.display = "none"
+            const img = document.getElementById("modal-image")
+            const item_desc = document.getElementById("modal-item-para")
+            const generating = document.getElementById("generating")
+            img.style.display = "none"
+            item_desc.textContent = ""
+            generating.textContent = "Generating Item..."
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms))
+        }
+
+        async function clothing_animation() {
+            img_dir = "{{ url_for('static', filename='assets/') }}"
+            const anim = document.getElementById("modal-anim")
+            anim.style.display = "block"
+            const anim_img = document.getElementById("modal-loading-anim")
+            let im_ind = 0
+            while(run_anim == true) {
+                image_url = img_dir + `cl_${im_ind}.png`
+                if(im_ind == 7) {
+                im_ind = 0
+                }
+                try {
+                    anim_img.src = image_url
+                    console.log("show url", anim_img.src)
+                    await sleep(750); // Wait 2 seconds
+                } catch (error) {
+                    console.log("Could not load image", error)
+                }
+                im_ind += 1
+            }
+            //anim.style.display = "none"
+        }
+
+        loadItems()
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
