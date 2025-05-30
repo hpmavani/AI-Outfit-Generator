@@ -1,7 +1,7 @@
 
 import sqlite3
 from typing import List
-import datasetHelper
+from . import datasetHelper
 from sentence_transformers import SentenceTransformer, util 
 import torch
 import numpy as np
